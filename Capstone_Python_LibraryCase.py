@@ -1,6 +1,6 @@
 # PURWADHIKA JC OL DATA SCIENCE
 # CAPSTONE PROJECT  : PYTHON FUNDAMENTAL (CREATE, READ, UPDATE, DELETE)
-# STUDY CASE        : FREE PUBLIC LIBRARY
+# STUDY CASE        : (FREE) PUBLIC LIBRARY
 
 ############################################# DEFINE TABLE STRUCTURES & DATASET #############################################
 
