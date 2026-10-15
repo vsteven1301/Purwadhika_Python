@@ -1,10 +1,11 @@
 # PURWADHIKA JC OL DATA SCIENCE
 # CAPSTONE PROJECT  : PYTHON FUNDAMENTAL (CREATE, READ, UPDATE, DELETE)
-# STUDY CASE        : (FREE) PUBLIC LIBRARY
+# STUDY CASE        : FREE PUBLIC LIBRARY
 
 ############################################# DEFINE TABLE STRUCTURES & DATASET #############################################
 
 # Table Books: Master Data, to save books that are available in the library 
+
 Books = {
     'ISBN'          : ['978-0375704024','978-1529926941','978-1911215370','978-0451087546','978-0385182447',
                       '978-0439023528','978-0439023498','978-0439023511','978-1338635171','978-1546171461',
@@ -425,7 +426,7 @@ def Authorization():            #Check Head Librarian Authorization
     return Authorized
 
 #################################################### PROGRAM MENU #################################################### 
-  
+
 while True:
     #Keep showing menu program, as long User do not choose Exit
     print ( "\n\t\t*******WELCOME TO FREE PUBLIC LIBRARY*******"
@@ -433,8 +434,8 @@ while True:
             "\n\t2. Display, Add and Edit Members"
             "\n\t3. Display All Rental Transactions"
             "\n\t4. Rent and Return a Book"
-            # 8. Display Transaction include Canceled (Only reserved for head librarian)
-            # 9. Correction Rental Transaction (Only reserved for head librarian)
+            "\n\t8. Display all Historical Transaction" #(Only reserved for head librarian)
+            "\n\t9. Remove Rental Transaction" #(Only reserved for head librarian)
             "\n\t0. Exit Program"
     )
 
@@ -462,32 +463,42 @@ while True:
                             AuthorLast = str( input ("Please input the author's last name: \t") ).strip().title()     
                             
                             while True:
-                                #Pre confirm each input: Published year do not exceed today (2026)
-                                PblshYear = int( input ("Please input the published year: \t") )
+                                try:
+                                    #Pre confirm each input: Published year do not exceed today (2026)
+                                    PblshYear = int( input ("Please input the published year: \t") )
 
-                                if PblshYear > int(TodayDate[0:4]) :
-                                    print ("Published year can't exceed today's date.")
-                                elif PblshYear <= 1950 :     # Reconfirm again
-                                    confirm = str( input("Are you sure the published year is {PblshYear}? (1) Yes | (0) No \t") )
-                                    if confirm in setYes:
+                                    if PblshYear > int(TodayDate[0:4]) :
+                                        print ("Published year can't exceed today's date.")
+                                    elif PblshYear <= 1950 :     # Reconfirm again
+                                        confirm = str( input("Are you sure the published year is {PblshYear}? (1) Yes | (0) No \t") )
+                                        if confirm in setYes:
+                                            break
+                                    else:
                                         break
-                                else:
-                                    break
-                                        
+
+                                except ValueError:
+                                    #Error Input type
+                                    print ("\nInvalid input.")
+                                
                             while True:
-                                #Pre confirm each input: Stock Qty exceed 15
-                                #Usually, a library won't have a large amount of qty for each book's title
-                                Stock = int( input ("Please input the stock: \t") )
+                                try:
+                                    #Pre confirm each input: Stock Qty exceed 15
+                                    #Usually, a library won't have a large amount of qty for each book's title
+                                    Stock = int( input ("Please input the stock: \t") )
 
-                                if Stock <= 0 :
-                                    print ("Book stock can't be zero or below.")
-                                elif Stock >15 :     # Reconfirm again
-                                    confirm = str( input("Are you sure the book stock is {Stock}? (1) Yes | (0) No \t") )
-                                    if confirm in setYes:
-                                        break
-                                else:
-                                    break        
-                            
+                                    if Stock <= 0 :
+                                        print ("Book stock can't be zero or below.")
+                                    elif Stock >15 :     # Reconfirm again
+                                        confirm = str( input("Are you sure the book stock is {Stock}? (1) Yes | (0) No \t") )
+                                        if confirm in setYes:
+                                            break
+                                    else:
+                                        break        
+                                                                    
+                                except ValueError:
+                                    #Error Input type
+                                    print ("\nInvalid input.")
+
                             #Add the new book process
                             CreateNewRecords ("Books", ISBN, BookTitle, AuthorFirst, AuthorLast, PblshYear, Stock)
 
@@ -519,39 +530,49 @@ while True:
                             print (f"\nPublished Year: {Books['PublishedYear'][IdxBooks]}")
                             confirm = str( input("Looks good? (1) Yes | (0) No, need to edit \t") )
                             if confirm in setNo:
-                                while True:
-                                    #Pre confirm each input: Published year do not exceed today (2026)
-                                    PblshYear = int( input ("\nPlease input the published year: \t") )
+                                while True:                                    
+                                    try:
+                                        #Pre confirm each input: Published year do not exceed today (2026)
+                                        PblshYear = int( input ("\nPlease input the published year: \t") )
 
-                                    if PblshYear > int(TodayDate[0:4]) :
-                                        print ("\nPublished year can't exceed today's date.")
-                                    elif PblshYear <= 1950 :     # Reconfirm again
-                                        confirm = str( input("\nAre you sure the published year is {PblshYear}? (1) Yes | (0) No \t") )
-                                        if confirm in setYes:
+                                        if PblshYear > int(TodayDate[0:4]) :
+                                            print ("\nPublished year can't exceed today's date.")
+                                        elif PblshYear <= 1950 :     # Reconfirm again
+                                            confirm = str( input("\nAre you sure the published year is {PblshYear}? (1) Yes | (0) No \t") )
+                                            if confirm in setYes:
+                                                UpdateRecords (Books, 'PublishedYear', IdxBooks, PblshYear)
+                                                break
+                                        else:
                                             UpdateRecords (Books, 'PublishedYear', IdxBooks, PblshYear)
                                             break
-                                    else:
-                                        UpdateRecords (Books, 'PublishedYear', IdxBooks, PblshYear)
-                                        break
+
+                                    except ValueError:
+                                        #Error Input type
+                                        print ("\nInvalid input.")
                                 
                             #Stock Qty
                             print (f"\nStocks: {Books['StockQty'][IdxBooks]}")
                             confirm = str( input("Looks good? (1) Yes | (0) No, need to edit \t") )
                             if confirm in setNo:
                                 while True:
-                                    #Pre confirm each input: Stock Qty exceed 15
-                                    Stock = int( input ("\nPlease input the stock: \t") )
+                                    try:
+                                        #Pre confirm each input: Stock Qty exceed 15
+                                        Stock = int( input ("\nPlease input the stock: \t") )
 
-                                    if Stock <= 0 :
-                                        print ("\nBook stock can't be zero or below.")
-                                    elif Stock >15 :     # Reconfirm again
-                                        confirm = str( input(f"\nAre you sure the book stock is {Stock}? (1) Yes | (0) No \t") )
-                                        if confirm in setYes:
-                                            UpdateRecords (Books, 'StockQty', IdxBooks, Stock)                                                                                        
-                                            break
-                                    else:
-                                        UpdateRecords (Books, 'StockQty', IdxBooks, Stock)
-                                        break                             
+                                        if Stock <= 0 :
+                                            print ("\nBook stock can't be zero or below.")
+                                        elif Stock >15 :     # Reconfirm again
+                                            confirm = str( input(f"\nAre you sure the book stock is {Stock}? (1) Yes | (0) No \t") )
+                                            if confirm in setYes:
+                                                UpdateRecords (Books, 'StockQty', IdxBooks, Stock)                                                                                        
+                                                break
+                                        else:
+                                            UpdateRecords (Books, 'StockQty', IdxBooks, Stock)
+                                            break     
+                                        
+                                    except ValueError:
+                                        #Error Input type
+                                        print ("\nInvalid input.")                        
 
                             print ("\nBook has been edited successfully.")
 
@@ -591,23 +612,31 @@ while True:
                             #Pre confirm each input: Member Phone (11-16 digits, do not start with 0)
                             MemberPhone = str( input ("\nPlease input member's phone number: \t") ).strip()
 
-                            if MemberPhone[0] != "0":
-                                if len(MemberPhone) not in range (11, 17):
-                                    print ("Phone number should be in 11 - 16 digits.")
-                                else:
-                                    #Check duplicate member: from Member Phone
-                                    if MemberPhone not in Members['Phone']:
-                                        break
-                                    else:
-                                        print ("Member has already existed.")
-                            else:
-                                print ("Phone number can't be started with (0) zero.")
+                            if MemberPhone.isnumeric()==False:
+                                print ("Please input number only.")
 
-                        MemberFirst = str( input ("\nPlease input member's first name: \t") ).strip().title()
-                        MemberLast = str( input ("Please input member's last name: \t") ).strip().title()
+                            else:
+                                if MemberPhone[0] != "0":
+                                    if len(MemberPhone) not in range (11, 17):
+                                        print ("Phone number should be in 11 - 16 digits.")
+                                    else:
+                                        #Check duplicate member: from Member Phone
+                                        if MemberPhone not in Members['Phone']:
+                                            break
+                                        else:
+                                            print ("Member has already existed.")
+                                else:
+                                    print ("Phone number can't be started with (0) zero.")
+
+                        while True:
+                            MemberFirst = str( input ("\nPlease input member's first name: \t") ).strip().title()
+                            MemberLast = str( input ("Please input member's last name: \t") ).strip().title()
+
+                            #If Member's First Name is not empty
+                            if len(MemberFirst)>3:
+                                break
                         
                         while True:
-
                             RawDate = str( input ("\nPlease input member's joining date (YYYYMMDD): \t") ).strip()
                             MemberDate = CheckDate (RawDate)
 
@@ -655,17 +684,22 @@ while True:
                                     #Pre confirm each input: Member Phone (11-16 digits, do not start with 0)
                                     MemberPhone = str( input ("Please input member's phone number: \t") ).strip()
 
-                                    if MemberPhone[0] != "0":
-                                        if len(MemberPhone) not in range (11, 17):
-                                            print ("Phone number should be in 11 - 16 digits.")
-                                        else:
-                                            #Check duplicate member: from Member Phone
-                                            if MemberPhone not in Members['Phone']:
-                                                break
+                                    if MemberPhone.isnumeric()==False:
+                                        print ("Please input number only.")
+        
+                                    else:                                    
+                                        if MemberPhone[0] != "0":
+                                            if len(MemberPhone) not in range (11, 17):
+                                                print ("Phone number should be in 11 - 16 digits.")
                                             else:
-                                                print ("Member has already existed.")
-                                    else:
-                                        print ("Phone number can't be started with (0) zero.")
+                                                #Check duplicate member: from Member Phone
+                                                if MemberPhone not in Members['Phone']:
+                                                    break
+                                                else:
+                                                    print ("Member has already existed.")
+                                        else:
+                                            print ("Phone number can't be started with (0) zero.")
+                                            
                             else:
                                 #No editing, assign variable as Old values
                                 MemberPhone = Members['Phone'][IdxMember]
